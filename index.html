@@ -71,6 +71,9 @@ main{flex:1;overflow-y:auto;padding:18px 22px 60px;}
 .hbox.chk.cat-body{background:var(--crim);border-color:var(--crim2);box-shadow:0 0 10px rgba(192,32,80,0.5);}
 .hbox.chk.cat-mind{background:var(--acc2);border-color:var(--acc);box-shadow:0 0 10px rgba(139,61,200,0.5);}
 .hbox.chk.cat-soul{background:#7a5a10;border-color:var(--gold);box-shadow:0 0 10px rgba(201,168,76,0.5);}
+.hbox.chk.cat-biz{background:#8a5010;border-color:#e8a020;box-shadow:0 0 10px rgba(232,160,32,0.5);}
+.hbox.chk.cat-business{background:#1a5a3a;border-color:#4a9a7a;box-shadow:0 0 10px rgba(74,154,122,0.5);}
+.hbox.chk.cat-biz{background:#8a5010;border-color:#e8a020;box-shadow:0 0 10px rgba(232,160,32,0.5);}
 .hbox.chk::after{content:'✦';color:white;font-size:9px;}
 .today-col{background:rgba(139,61,200,0.05);}
 .sbadge{font-family:'Cinzel',serif;font-size:10px;color:var(--gold);}
@@ -170,6 +173,9 @@ main{flex:1;overflow-y:auto;padding:18px 22px 60px;}
 .cat-body-txt{color:var(--crim2);}
 .cat-mind-txt{color:var(--acc3);}
 .cat-soul-txt{color:var(--gold);}
+.cat-biz-txt{color:#e8a020;}
+.cat-business-txt{color:#4a9a7a;}
+.cat-biz-txt{color:#e8a020;}
 
 @media(max-width:600px){
   header{padding:8px 12px;}
@@ -215,6 +221,12 @@ main{flex:1;overflow-y:auto;padding:18px 22px 60px;}
     <div class="xpbar"><div class="xpfill" id="xpf" style="width:0%"></div></div>
     <span class="xptxt" id="xpt">0/100</span>
   </div>
+  
+    <div id="prayer-bar" style="background:linear-gradient(135deg,rgba(10,30,15,0.99),rgba(8,20,12,0.99));border-bottom:1px solid rgba(61,184,106,0.3);padding:7px 22px;display:flex;align-items:center;gap:16px;flex-shrink:0;overflow-x:auto;">
+      <span style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:2px;color:#3db86a;white-space:nowrap;">🤲 PRIÈRES</span>
+      <div id="prayer-times" style="display:flex;gap:14px;align-items:center;"></div>
+      <div id="next-prayer" style="font-family:'Cinzel',serif;font-size:9px;color:#c9a84c;margin-left:auto;white-space:nowrap;"></div>
+    </div>
   <nav>
     <button class="nbtn active" onclick="SP('habits',this)">Rituels</button>
     <button class="nbtn" onclick="SP('quests',this)">Quêtes</button>
@@ -242,6 +254,24 @@ main{flex:1;overflow-y:auto;padding:18px 22px 60px;}
         <span class="wlbl" id="wlbl">...</span>
         <button onclick="CW(1)">›</button>
       </div>
+      
+      <div class="panel" id="prayer-panel">
+        <div class="ptitle">Horaires des Prières — Évry</div>
+        <div id="prayer-widget" style="margin-bottom:8px;"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+          <span id="next-prayer" style="font-family:'Cinzel',serif;font-size:10px;color:var(--acc3);letter-spacing:1px;"></span>
+          <button class="bsm" onclick="requestNotifPermission()">🔔 Activer rappels</button>
+        </div>
+      </div>
+      
+      <div class="panel" style="margin-bottom:14px;">
+        <div class="ptitle">Horaires des Prières — Évry</div>
+        <div id="prayer-widget" style="margin-bottom:8px;"><div style="color:var(--textm);font-style:italic;font-size:12px;">Chargement des horaires...</div></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:6px;">
+          <span id="next-prayer" style="font-family:'Cinzel',serif;font-size:10px;color:var(--acc3);letter-spacing:1px;"></span>
+          <button class="bsm" onclick="requestNotifPermission()">🔔 Activer rappels</button>
+        </div>
+      </div>
       <div class="panel">
         <div class="ptitle">Rituels Quotidiens</div>
         <div class="htbl-wrap">
@@ -263,6 +293,7 @@ main{flex:1;overflow-y:auto;padding:18px 22px 60px;}
             <option value="body">💪 Corps</option>
             <option value="mind">📚 Esprit</option>
             <option value="soul">✦ Âme</option>
+            <option value="biz">💼 Business</option>
           </select>
           <button class="bsm" onclick="AH()">+ Ajouter</button>
         </div>
@@ -316,6 +347,9 @@ main{flex:1;overflow-y:auto;padding:18px 22px 60px;}
           <button class="ftab" onclick="FA('mind',this)">📚 Esprit</button>
           <button class="ftab" onclick="FA('soul',this)">✦ Âme</button>
           <button class="ftab" onclick="FA('special',this)">⭐ Spécial</button>
+          <button class="ftab" onclick="FA('biz',this)">💼 Business</button>
+          <button class="ftab" onclick="FA('business',this)">💼 Business</button>
+          <button class="ftab" onclick="FA('biz',this)">💼 Business</button>
         </div>
         <div class="agrid" id="agrid"></div>
       </div>
@@ -388,9 +422,15 @@ let S={
     {id:40,name:'Détente saine ✨',cat:'soul'},
     {id:41,name:'Pas de gooning 🚫',cat:'soul'},
     {id:42,name:'Journalisation 📓',cat:'soul'},
+  {id:50,name:'Travail freelance / projet 💼',cat:'business'},
+  {id:51,name:'Prospecter un client 📞',cat:'business'},
+  {id:52,name:'Apprendre une compétence business 📈',cat:'business'},
   ],
+
   checks:{},sleep:{},xp:0,notes:[],currentNote:null,wo:0,quests:[],_achiev:[],
-};
+  biz:["Ton business ne se construira pas seul. Travailles-y chaque jour.","La régularité fait la différence entre un rêve et une réalité.","Chaque action business aujourd'hui est un investissement dans ton futur."],
+},
+  business:["Ton projet n'avance pas tout seul. Ouvre-le aujourd'hui.","Un entrepreneur qui ne prospecte pas ne vend pas. Un message suffit.","La richesse halal se construit par la discipline quotidienne.","Chaque compétence apprise est un outil de plus dans ton arsenal."],
 function LS(){try{const s=localStorage.getItem('alice_v3');if(s){const p=JSON.parse(s);S={...S,...p};}}catch(e){}}
 function SS(){try{localStorage.setItem('alice_v3',JSON.stringify({...S,musicFiles:[]}));}catch(e){}}
 const LEVELS=[
@@ -406,7 +446,11 @@ const LEVELS=[
 function GLI(xp){let i=0;for(let j=0;j<LEVELS.length;j++)if(xp>=LEVELS[j].min)i=j;return i;}
 function GLD(xp){const i=GLI(xp);const c=LEVELS[i];const n=LEVELS[i+1];const pct=n?Math.min(100,Math.round((xp-c.min)/(n.min-c.min)*100)):100;return{level:i+1,...c,next:n,pct};}
 function RXP(){S.xp=Object.values(S.checks).filter(Boolean).length*10;}
-function DK(d){return d.toISOString().split('T')[0];}
+function DK(d){
+  const paris=new Date(d.toLocaleString('en-US',{timeZone:'Europe/Paris'}));
+  const y=paris.getFullYear();const m=String(paris.getMonth()+1).padStart(2,'0');const day=String(paris.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
 function GWD(off=0){const now=new Date();const day=now.getDay();const mon=new Date(now);mon.setDate(now.getDate()-((day+6)%7)+off*7);mon.setHours(0,0,0,0);return Array.from({length:7},(_,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);return d;});}
 function IT(d){return DK(d)===DK(new Date());}
 function TDK(){return DK(new Date());}
@@ -470,6 +514,19 @@ const ACH=[
   {id:'so6',cat:'soul',rare:false,icon:'📓',name:'Scribe de l\'Âme',desc:'Journal 5 fois',check:s=>cHN(s,42,5)},
   {id:'so7',cat:'soul',rare:false,icon:'📜',name:'Chroniqueur',desc:'5 parchemins créés',check:s=>s.notes.length>=5},
   {id:'so8',cat:'soul',rare:false,icon:'🌙',name:'Contemplation',desc:'Détente saine 20 fois',check:s=>cHN(s,40,20)},
+
+  // BUSINESS
+  {id:'bz1',cat:'biz',rare:false,icon:'💼',name:'Premier Pas',desc:'Premier rituel business coché',check:s=>s.habits.filter(h=>h.cat==='biz').some(h=>Object.keys(s.checks).some(k=>k.startsWith(h.id+'_')&&s.checks[k]))},
+  {id:'bz2',cat:'biz',rare:false,icon:'📈',name:'Consistance',desc:'Rituel business 7 jours',check:s=>{const bh=s.habits.filter(h=>h.cat==='biz');let max=0;for(const h of bh){let c=0,m=0;const now=new Date();now.setHours(0,0,0,0);for(let i=0;i<365;i++){const d=new Date(now);d.setDate(now.getDate()-i);if(s.checks[`${h.id}_${DK(d)}`])c++;else{m=Math.max(m,c);c=0;}}max=Math.max(max,Math.max(m,c));}return max>=7;}},
+  {id:'bz3',cat:'biz',rare:false,icon:'🤝',name:'Entrepreneur',desc:'Rituel business 30 jours',check:s=>{const bh=s.habits.filter(h=>h.cat==='biz');let total=0;for(const h of bh)total+=Object.keys(s.checks).filter(k=>k.startsWith(h.id+'_')&&s.checks[k]).length;return total>=30;}},
+  {id:'bz4',cat:'biz',rare:true,icon:'💰',name:'Fondateur',desc:'Rituel business 60 jours',check:s=>{const bh=s.habits.filter(h=>h.cat==='biz');let total=0;for(const h of bh)total+=Object.keys(s.checks).filter(k=>k.startsWith(h.id+'_')&&s.checks[k]).length;return total>=60;}},
+  {id:'bz5',cat:'biz',rare:true,icon:'🏆',name:'Empire',desc:'Rituel business 100 jours',check:s=>{const bh=s.habits.filter(h=>h.cat==='biz');let total=0;for(const h of bh)total+=Object.keys(s.checks).filter(k=>k.startsWith(h.id+'_')&&s.checks[k]).length;return total>=100;}},
+
+  {id:'bz1',cat:'biz',rare:false,icon:'💼',name:'Premier Pas Biz',desc:'Premier rituel business coché',check:function(s){return s.habits.filter(function(h){return h.cat==='biz';}).some(function(h){return Object.keys(s.checks).some(function(k){return k.startsWith(h.id+'_')&&s.checks[k];});});}},
+  {id:'bz2',cat:'biz',rare:false,icon:'📈',name:'Consistance',desc:'Rituel business 7 jours de suite',check:function(s){var bh=s.habits.filter(function(h){return h.cat==='biz';});for(var i=0;i<bh.length;i++){if(cHC(s,bh[i].id,7))return true;}return false;}},
+  {id:'bz3',cat:'biz',rare:false,icon:'🤝',name:'Entrepreneur',desc:'30 rituels business au total',check:function(s){var bh=s.habits.filter(function(h){return h.cat==='biz';});var tot=0;bh.forEach(function(h){tot+=Object.keys(s.checks).filter(function(k){return k.startsWith(h.id+'_')&&s.checks[k];}).length;});return tot>=30;}},
+  {id:'bz4',cat:'biz',rare:true,icon:'💰',name:'Fondateur',desc:'60 rituels business au total',check:function(s){var bh=s.habits.filter(function(h){return h.cat==='biz';});var tot=0;bh.forEach(function(h){tot+=Object.keys(s.checks).filter(function(k){return k.startsWith(h.id+'_')&&s.checks[k];}).length;});return tot>=60;}},
+  {id:'bz5',cat:'biz',rare:true,icon:'🏆',name:'Empire',desc:'100 rituels business au total',check:function(s){var bh=s.habits.filter(function(h){return h.cat==='biz';});var tot=0;bh.forEach(function(h){tot+=Object.keys(s.checks).filter(function(k){return k.startsWith(h.id+'_')&&s.checks[k];}).length;});return tot>=100;}},
   {id:'sp1',cat:'special',rare:true,icon:'✦',name:'Première Étincelle',desc:'Premier rituel coché',check:s=>Object.values(s.checks).some(Boolean)},
   {id:'sp2',cat:'special',rare:true,icon:'⚔️',name:'Semaine Parfaite',desc:'Tous tes rituels 7 jours de suite',check:s=>cPW(s)},
   {id:'sp3',cat:'special',rare:true,icon:'🌙✦',name:'Guerrière Totale',desc:'Foi + Corps + Esprit le même jour 7x',check:s=>cTCD(s,7)},
@@ -492,8 +549,27 @@ const QT=[
   {name:'Forteresse Intérieure',desc:'Pas de gooning 7 jours de suite.',xp:180,cat:'soul',type:'c',hid:41,target:7},
   {name:'Plume de l\'Âme',desc:'Écris dans 2 parchemins.',xp:60,cat:'soul',type:'n',target:2},
   {name:'Semaine Totale',desc:'Corps + Foi + Esprit chaque jour 5j.',xp:200,cat:'special',type:'tc',target:5},
+
+  {name:'Bâtisseur Silencieux',desc:'Complète tes rituels business 5 jours cette semaine.',xp:120,cat:'biz',type:'cat_week',catKey:'biz',target:5},
+  {name:'Discipline d\'Entrepreneur',desc:'Business + École le même jour 4 fois.',xp:130,cat:'biz',type:'cat_double',c1:'biz',c2:'mind',target:4},
+
+  {name:'Défi : PL Complet',desc:'Salle + protéines + alimentation saine le même jour 3 fois.',xp:180,cat:'body',type:'triple_check',h1:20,h2:21,h3:22,target:3},
+  {name:'Défi : Nuit du Savant',desc:'Lire + révision le même jour 5 fois.',xp:160,cat:'mind',type:'dw',h1:3,h2:30,target:5},
+  {name:'Défi : 0 Écart',desc:'Alimentation saine + pas de gooning 7 jours.',xp:250,cat:'special',type:'dw',h1:22,h2:41,target:7},
+  {name:'Défi : Entrepreneur Pieux',desc:'Business + Foi chaque jour 5 jours.',xp:200,cat:'biz',type:'cat_double',c1:'biz',c2:'faith',target:5},
+  {name:'Défi : Muscle Up',desc:'Salle 5x cette semaine + 8h de sommeil 4 nuits.',xp:220,cat:'body',type:'hw',hid:20,target:5},
+  {name:'Bâtisseur Silencieux',desc:'Rituels business 5 jours cette semaine.',xp:120,cat:'biz',type:'cat_week',catKey:'biz',target:5},
+  {name:'Discipline Entrepreneur',desc:'Business + École le même jour 4 fois.',xp:130,cat:'biz',type:'cat_double',c1:'biz',c2:'mind',target:4},
   {name:'Moine & Guerrier',desc:'Salle + 1 prière le même jour 5 fois.',xp:130,cat:'special',type:'dw',h1:20,h2:10,target:5},
   {name:'Hygiène Royale',desc:'Hygiène + Douche froide 5j.',xp:90,cat:'soul',type:'dw',h1:24,h2:23,target:5},
+  {name:'Semaine Business',desc:'Travaille sur ton projet 5j cette semaine.',xp:110,cat:'business',type:'hw',hid:50,target:5},
+  {name:'Chasseur de Clients',desc:'Prospecte 4 fois cette semaine.',xp:100,cat:'business',type:'hw',hid:51,target:4},
+  {name:'Défi : Muscle Up',desc:'Va à la salle 8 fois cette semaine + note ton progrès.',xp:200,cat:'body',type:'hw',hid:20,target:8,secondary:true},
+  {name:'Défi : 100 Pompes',desc:'Fais de la salle 6 jours cette semaine.',xp:180,cat:'body',type:'hw',hid:20,target:6,secondary:true},
+  {name:'Défi : Semaine Verte',desc:'Alimentation saine 7 jours sans exception.',xp:160,cat:'body',type:'hw',hid:22,target:7,secondary:true},
+  {name:'Défi : Tahajjud',desc:'Fais Fajr 7 jours de suite.',xp:250,cat:'faith',type:'hw',hid:10,target:7,secondary:true},
+  {name:'Défi : Silence Digital',desc:'Détox réseaux 6 jours cette semaine.',xp:150,cat:'soul',type:'hw',hid:41,target:6,secondary:true},
+  {name:'Défi : Nuit de l\'Érudit',desc:'Lis avant de dormir 7 soirs.',xp:140,cat:'sleep',type:'hw',hid:3,target:7,secondary:true}
 ];
 function cQP(q){
   if(!q)return 0;
@@ -503,11 +579,16 @@ function cQP(q){
   if(q.type==='5p')return c5P(S)?1:0;
   if(q.type==='n')return Math.min(q.target,S.notes.length);
   if(q.type==='c')return cHC(S,q.hid,q.target)?q.target:0;
-  if(q.type==='tc'){const now=new Date();now.setHours(0,0,0,0);let c=0;const faith=S.habits.filter(h=>h.cat==='faith');const body=S.habits.filter(h=>h.cat==='body');const mind=S.habits.filter(h=>h.cat==='mind');for(let i=0;i<7;i++){const d=new Date(now);d.setDate(now.getDate()-i);const dk=DK(d);if(faith.some(h=>S.checks[`${h.id}_${dk}`])&&body.some(h=>S.checks[`${h.id}_${dk}`])&&mind.some(h=>S.checks[`${h.id}_${dk}`]))c++;}return Math.min(q.target,c);}
+  if(q.type==='cat_week'){var now2=new Date();now2.setHours(0,0,0,0);var cnt2=0;var ch=S.habits.filter(function(h){return h.cat===q.catKey;});for(var i=0;i<7;i++){var d2=new Date(now2);d2.setDate(now2.getDate()-i);var dk2=DK(d2);if(ch.some(function(h){return S.checks[h.id+'_'+dk2];}))cnt2++;}return Math.min(q.target,cnt2);}
+if(q.type==='cat_double'){var now3=new Date();now3.setHours(0,0,0,0);var cnt3=0;var c1h=S.habits.filter(function(h){return h.cat===q.c1;});var c2h=S.habits.filter(function(h){return h.cat===q.c2;});for(var i=0;i<7;i++){var d3=new Date(now3);d3.setDate(now3.getDate()-i);var dk3=DK(d3);if(c1h.some(function(h){return S.checks[h.id+'_'+dk3];})&&c2h.some(function(h){return S.checks[h.id+'_'+dk3];}))cnt3++;}return Math.min(q.target,cnt3);}
+if(q.type==='triple_check'){const now=new Date();now.setHours(0,0,0,0);let cnt=0;for(let i=0;i<7;i++){const d=new Date(now);d.setDate(now.getDate()-i);const dk=DK(d);if(S.checks[String(q.h1)+'_'+dk]&&S.checks[String(q.h2)+'_'+dk]&&S.checks[String(q.h3)+'_'+dk])cnt++;}return Math.min(q.target,cnt);}
+if(q.type==='cat_week'){const now=new Date();now.setHours(0,0,0,0);let cnt=0;const ch=S.habits.filter(h=>h.cat===q.catKey);for(let i=0;i<7;i++){const d=new Date(now);d.setDate(now.getDate()-i);const dk=DK(d);if(ch.some(h=>S.checks[`${h.id}_${dk}`]))cnt++;}return Math.min(q.target,cnt);}
+if(q.type==='cat_double'){const now=new Date();now.setHours(0,0,0,0);let cnt=0;const c1h=S.habits.filter(h=>h.cat===q.c1);const c2h=S.habits.filter(h=>h.cat===q.c2);for(let i=0;i<7;i++){const d=new Date(now);d.setDate(now.getDate()-i);const dk=DK(d);if(c1h.some(h=>S.checks[`${h.id}_${dk}`])&&c2h.some(h=>S.checks[`${h.id}_${dk}`]))cnt++;}return Math.min(q.target,cnt);}
+if(q.type==='tc'){const now=new Date();now.setHours(0,0,0,0);let c=0;const faith=S.habits.filter(h=>h.cat==='faith');const body=S.habits.filter(h=>h.cat==='body');const mind=S.habits.filter(h=>h.cat==='mind');for(let i=0;i<7;i++){const d=new Date(now);d.setDate(now.getDate()-i);const dk=DK(d);if(faith.some(h=>S.checks[`${h.id}_${dk}`])&&body.some(h=>S.checks[`${h.id}_${dk}`])&&mind.some(h=>S.checks[`${h.id}_${dk}`]))c++;}return Math.min(q.target,c);}
   return 0;
 }
-const CATCOL={sleep:'var(--sky2)',faith:'var(--emerald2)',body:'var(--crim2)',mind:'var(--acc3)',soul:'var(--gold)',special:'var(--gold2)'};
-const CATLBL={sleep:'🌙 Sommeil',faith:'🤲 Foi',body:'💪 Corps',mind:'📚 Esprit',soul:'✦ Âme',special:'⭐ Spécial'};
+const CATCOL={sleep:'var(--sky2)',faith:'var(--emerald2)',body:'var(--crim2)',mind:'var(--acc3)',soul:'var(--gold)',special:'var(--gold2)',business:'#4a9a7a'};
+const CATLBL={sleep:'🌙 Sommeil',faith:'🤲 Foi',body:'💪 Corps',mind:'📚 Esprit',soul:'✦ Âme',special:'⭐ Spécial',business:'💼 Business'};
 function GQ(){const sh=[...QT].sort(()=>Math.random()-0.5).slice(0,4);S.quests=sh.map((q,i)=>({...q,id:Date.now()+i,rewarded:false}));SS();RQR();showToast('✦ Nouvelles quêtes inscrites.');}
 function RQR(){
   const ql=document.getElementById('qlist');const qd=document.getElementById('qdone');
@@ -561,7 +642,8 @@ function CA(){
   const prev=new Set(S._achiev||[]);
   for(const a of ACH){if(!prev.has(a.id)&&a.check(S)){if(!S._achiev)S._achiev=[];S._achiev.push(a.id);showToast(`${a.icon} ${a.name} débloqué !`);SAM('achievement');SS();return;}}
 }
-const CATS=[{key:'sleep',label:'🌙 Sommeil'},{key:'faith',label:'🤲 Foi & Prières'},{key:'body',label:'💪 Corps & Santé'},{key:'mind',label:'📚 Esprit & École'},{key:'soul',label:'✦ Âme & Discipline'}];
+const CATS=[{key:'sleep',label:'🌙 Sommeil'},{key:'faith',label:'🤲 Foi & Prières'},{key:'body',label:'💪 Corps & Santé'},{key:'mind',label:'📚 Esprit & École'},{key:'soul',label:'✦ Âme & Discipline'},
+  {key:'business',label:'💼 Business & Projets'},{key:'biz',label:'💼 Business'}];
 function RH(){
   const dates=GWD(S.wo);const dn=['Lu','Ma','Me','Je','Ve','Sa','Di'];
   for(let i=0;i<7;i++){const th=document.getElementById(`d${i}`);if(th){th.textContent=dn[i];th.style.color=IT(dates[i])?'var(--acc)':'';};}
@@ -586,7 +668,13 @@ dtd.appendChild(rbtn);dtd.appendChild(dbtn);tr.appendChild(dtd);tbody.appendChil
 }
 function CS(hid){let s=0;const now=new Date();now.setHours(0,0,0,0);for(let i=0;i<365;i++){const d=new Date(now);d.setDate(now.getDate()-i);if(S.checks[`${hid}_${DK(d)}`])s++;else if(i>0)break;}return s;}
 function TH(hid,date){const key=`${hid}_${DK(date)}`;S.checks[key]=!S.checks[key];RXP();SS();RH();CA();RQR();if(S.checks[key])SAM('check');}
-function AH(){const inp=document.getElementById('nhi');const name=inp.value.trim();if(!name)return;const cat=document.getElementById('nhc').value;S.habits.push({id:Date.now(),name,cat});inp.value='';SS();RH();}
+function AH(){const inp=document.getElementById('nhi');const name=inp.value.trim();if(!name)return;const cat=document.getElementById('nhc').value;const hid=Date.now();S.habits.push({id:hid,name,cat});inp.value='';SS();RH();autoGenQuest(hid,name,cat);}
+function autoGenQuest(hid,name,cat){
+  const q={id:Date.now(),name:'Maîtrise : '+name.slice(0,20),desc:'Accomplis "'+name.slice(0,25)+'" 5 fois.',xp:80,cat:cat,type:'hw',hid:hid,target:5,rewarded:false};
+  if(!S.quests)S.quests=[];
+  S.quests.push(q);SS();
+  showToast('✦ Nouvelle quête générée pour ce rituel !');
+}
 function CW(d){S.wo+=d;RH();}
 function RC(){const c=document.getElementById('pchart');c.innerHTML='';const today=new Date();today.setHours(0,0,0,0);for(let i=27;i>=0;i--){const d=new Date(today);d.setDate(today.getDate()-i);const tot=S.habits.length||1;const done=S.habits.filter(h=>S.checks[`${h.id}_${DK(d)}`]).length;const pct=Math.round(done/tot*100);const wrap=document.createElement('div');wrap.className='cbar-wrap';const empty=document.createElement('div');empty.className='cbar empty';const bar=document.createElement('div');bar.className='cbar main';bar.style.height=pct+'%';bar.title=`${DK(d)}: ${done}/${tot}`;wrap.appendChild(empty);wrap.appendChild(bar);if(i%7===0){const l=document.createElement('div');l.className='clbl';l.textContent=d.getDate();wrap.appendChild(l);}c.appendChild(wrap);}}
 function RS(){const c=document.getElementById('sdots');c.innerHTML='';const today=TDK();const sel=S.sleep[today]||null;const vals=[5,5.5,6,6.5,7,7.5,8,8.5,9,9.5,10];for(const h of vals){const d=document.createElement('div');const ok=h>=7;d.className=`sdot${sel===h?' sel':''}${(!ok&&sel!==h)?' bad':''}`;d.textContent=h+'h';d.onclick=()=>{S.sleep[today]=h;SS();RS();CA();showToast(h>=8?`✦ ${h}h — objectif atteint !`:h>=7?`${h}h — presque, vise 8h.`:`${h}h... trop peu, vise 8h.`);};c.appendChild(d);}}
@@ -600,7 +688,110 @@ function IL(){const ta=document.getElementById('nbody');const p=ta.selectionStar
 function SP(name,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nbtn').forEach(b=>b.classList.remove('active'));document.getElementById('page-'+name).classList.add('active');if(btn)btn.classList.add('active');if(name==='grimoire')RG();if(name==='quests')RQR();if(name==='notes'){RNL();if(S.currentNote)ON(S.currentNote);}
   if(name==='monthly')renderMonthly();}
 // AM defined below
-const AM={morning:["Un nouveau jour s'ouvre comme une page vierge. Ce que tu y inscris t'appartient.","L'aube n'attend personne. Mais elle récompense ceux qui se lèvent pour elle.","La magie ne vient pas du talent. Elle vient des rituels répétés dans l'obscurité.","Je t'observe. Pas pour te juger — pour voir si tu tiens ta parole.","Ton corps est ton temple. Ton âme en est la flamme. Ne laisse pas le vent l'éteindre.","La foi et la discipline ne s'opposent pas. Elles sont deux faces du même serment.","Ce que tu construis aujourd'hui, c'est toi de demain.","Chaque matin où tu te lèves tôt, tu gagnes une heure sur le reste du monde."],check:["Un rituel de plus. Imperceptible pour le monde. Irréversible pour toi.","C'est bien. Continue. Ne me cherche pas d'excuses si tu t'arrêtes.","La constance est une forme de magie que peu osent pratiquer.","Chaque case cochée est une rune gravée dans ton caractère.","Tu progresses. Je le note.","Allah voit tes efforts, même les plus silencieux.","Petit à petit — c'est comme ça que les montagnes bougent."],miss:["Tu as manqué. Cela arrive. L'important est ce que tu fais maintenant.","Un rituel brisé n'est pas une défaite — c'est un rappel.","Je ne te blâme pas. Mais ne te mens pas non plus.","Demain est une nouvelle page. Ne la laisse pas vierge."],achievement:["Un achievement. Tu t'es prouvé quelque chose aujourd'hui.","La limite que tu pensais avoir — tu viens de la repousser.","✦ Rare. Vraiment.","Ton grimoire s'enrichit. Continue d'écrire ta légende.","Allah récompense l'effort sincère. Et le tien l'est."]};
+
+const AM={
+morning:[
+  "Un nouveau jour s'ouvre comme une page vierge. Ce que tu y inscris t'appartient.",
+  "L'aube n'attend personne. Mais elle récompense ceux qui se lèvent pour elle.",
+  "La magie ne vient pas du talent. Elle vient des rituels répétés dans l'obscurité.",
+  "Je t'observe. Pas pour te juger — pour voir si tu tiens ta parole.",
+  "Ton corps est ton temple. Ton âme en est la flamme. Ne laisse pas le vent l'éteindre.",
+  "La foi et la discipline ne s'opposent pas. Elles sont deux faces du même serment.",
+  "Ce que tu construis aujourd'hui, c'est toi de demain.",
+  "Chaque matin où tu te lèves tôt, tu gagnes une heure sur le reste du monde.",
+  "Le soleil se lève sans permission. Toi aussi.",
+  "Il n'y a pas de petits rituels. Seulement des personnes qui sous-estiment la répétition.",
+  "Aujourd'hui, tu peux être meilleur qu'hier. C'est tout ce qu'on te demande.",
+  "La nuit efface tout. Le matin recrée tout. Tu choisis ce que tu recréés.",
+  "L'univers ne connaît pas l'excuse. Seulement l'action ou l'inaction.",
+  "Commence. Le reste vient tout seul.",
+  "La personne que tu veux être demain commence par les choix que tu fais maintenant.",
+  "Il y a deux types de douleur : la discipline et le regret. Choisis.",
+  "Chaque version supérieure de toi-même commence par un matin difficile surmonté.",
+  "Le silence du matin est une arme. Utilise-la.",
+  "Ne cherche pas la motivation. Construis la discipline. Elle ne part jamais.",
+  "Tu n'as pas besoin d'être inspiré pour agir. Tu as besoin d'agir pour être inspiré.",
+  "Ce matin est une chance. Pas tout le monde se réveille.",
+  "Fais en sorte que ta version future soit fière de toi aujourd'hui.",
+  "Les grands ne sont pas ceux qui ne tombent pas. Ce sont ceux qui se relèvent.",
+  "Aujourd'hui est un nouveau contrat avec toi-même. Signe-le.",
+  "La discipline est la liberté la plus haute qui soit.",
+],
+check:[
+  "Un rituel de plus. Imperceptible pour le monde. Irréversible pour toi.",
+  "C'est bien. Continue. Ne me cherche pas d'excuses si tu t'arrêtes.",
+  "La constance est une forme de magie que peu osent pratiquer.",
+  "Chaque case cochée est une rune gravée dans ton caractère.",
+  "Tu progresses. Je le note.",
+  "Allah voit tes efforts, même les plus silencieux.",
+  "Petit à petit — c'est comme ça que les montagnes bougent.",
+  "Ce geste répété devient un fondement. Souviens-t'en.",
+  "Bien.",
+  "Continue.",
+  "C'est exactement ça.",
+  "Une brique de plus sur le mur.",
+  "Tu construis quelque chose de réel.",
+  "Imperceptible aujourd'hui. Incroyable dans six mois.",
+  "C'est noté.",
+  "Chaque rituel accompli est une dette envers ton futur moi — remboursée.",
+  "Tu choisis la discipline. Pas tout le monde fait ce choix.",
+  "La régularité bat le génie. Toujours.",
+  "Tu viens de prouver que tu peux. Encore.",
+  "Ce n'est pas grand chose. Et pourtant, c'est tout.",
+  "Le monde ne voit pas ces moments. Mais ils te façonnent.",
+  "✦",
+  "Fait. C'est ce qui compte.",
+  "Tu te bats pour la bonne version de toi-même.",
+  "Ça s'accumule. Tu verras bientôt.",
+  "Chaque habitude cochée est une prière à ton futur.",
+  "Le corps suit quand l'âme décide.",
+  "Même quand c'est dur. Surtout quand c'est dur.",
+  "C'est dans la répétition que réside la magie.",
+  "Tu n'es pas parfait. Tu es constant. C'est mieux.",
+  "Respect.",
+  "Allah récompense l'effort sincère. Et le tien l'est.",
+  "La persévérance est la plus belle des vertus.",
+  "Chaque jour, une nouvelle version de toi naît.",
+  "Ce que tu viens de faire a plus de valeur que tu ne le penses.",
+  "Tes actions définissent qui tu es. Pas tes intentions.",
+  "La discipline silencieuse crée des résultats bruyants.",
+  "Continue d'écrire cette histoire.",
+  "Bien joué. Maintenant le prochain.",
+  "C'est une petite victoire. Les petites victoires font les grandes vies.",
+],
+miss:[
+  "Tu as manqué. Cela arrive. L'important est ce que tu fais maintenant.",
+  "Un rituel brisé n'est pas une défaite — c'est un rappel.",
+  "Je ne te blâme pas. Mais ne te mens pas non plus.",
+  "Demain est une nouvelle page. Ne la laisse pas vierge.",
+  "L'imperfection est réelle. Elle fait partie du travail. Continue quand même.",
+  "Même les plus grands ont des jours sans. Ce qui compte c'est le lendemain.",
+  "Ne t'en veux pas. Reprends.",
+  "Un jour manqué ne brise pas une chaîne. Deux jours, oui. Ne laisse pas deux jours.",
+  "La faiblesse d'aujourd'hui peut devenir la force de demain. Si tu choisis.",
+  "Ce n'est pas une raison d'abandonner. C'est une raison de recommencer.",
+  "L'échec n'est que du feedback. Adapte-toi.",
+  "Tu n'es pas en retard. Tu recommences.",
+  "Oublie hier. Concentre-toi sur maintenant.",
+  "La chute n'est pas la fin. Rester à terre l'est.",
+],
+achievement:[
+  "Un achievement. Tu t'es prouvé quelque chose aujourd'hui.",
+  "La limite que tu pensais avoir — tu viens de la repousser.",
+  "✦ Rare. Vraiment.",
+  "Ton grimoire s'enrichit. Continue d'écrire ta légende.",
+  "Allah récompense l'effort sincère. Et le tien l'est.",
+  "Ce n'était pas facile. Et tu l'as fait quand même.",
+  "Une nouvelle rune gravée dans ton âme.",
+  "Tu deviens quelqu'un d'autre. Quelqu'un de mieux.",
+  "Mémorable.",
+  "Peu arrivent là. Tu en fais partie.",
+  "Ce succès t'appartient entièrement.",
+  "Chaque achievement est une preuve que tu ne t'es pas menti.",
+  "Tu as tenu ta promesse à toi-même. C'est rare.",
+],
+};
+
 function pick(arr){return arr[Math.floor(Math.random()*arr.length)];}
 async function SAM(type='morning'){const el=document.getElementById('alice-msg');el.classList.add('alice-typing');el.textContent='...';await new Promise(r=>setTimeout(r,500));el.classList.remove('alice-typing');el.textContent=`"${type==='morning'?(Math.random()>0.4?getSmartAliceMsg():pick(AM.morning)):pick(AM[type]||AM.morning)}"` ;}
 let audioCtx=null,playing=false,gainNode=null,oscs=[],audioElem=null,mFiles=[],mIdx=0;
@@ -755,9 +946,271 @@ function getSmartAliceMsg(){
   return pick(msgs);
 }
 
+// ===== PRAYER TIMES =====
+const PRAYER_NAMES={Fajr:'Fajr',Sunrise:'Lever',Dhuhr:'Dhuhr',Asr:'Asr',Maghrib:'Maghrib',Isha:'Isha'};
+const PRAYER_IDS={Fajr:10,Dhuhr:11,Asr:12,Maghrib:13,Isha:14};
+let prayerData=null;
+
+async function fetchPrayerTimes(){
+  try{
+    const today=new Date();
+    const d=today.getDate(),m=today.getMonth()+1,y=today.getFullYear();
+    // Evry-Courcouronnes coords: 48.6333, 2.4333, method 3 (MWL)
+    const url=`https://api.aladhan.com/v1/timings/${d}-${m}-${y}?latitude=48.6333&longitude=2.4333&method=3`;
+    const res=await fetch(url);
+    const data=await res.json();
+    if(data.code===200){
+      prayerData=data.data.timings;
+      renderPrayerTimes();
+      schedulePrayerAlerts();
+    }
+  }catch(e){
+    document.getElementById('prayer-times').innerHTML='<span style="color:var(--textm);font-size:10px;">Horaires non disponibles</span>';
+  }
+}
+
+function renderPrayerTimes(){
+  if(!prayerData)return;
+  const el=document.getElementById('prayer-times');
+  const now=new Date();
+  const nowMin=now.getHours()*60+now.getMinutes();
+  const prayers=['Fajr','Dhuhr','Asr','Maghrib','Isha'];
+  let nextPrayer=null,minDiff=Infinity;
+  el.innerHTML='';
+  for(const p of prayers){
+    const time=prayerData[p];
+    if(!time)continue;
+    const [hh,mm]=time.split(':').map(Number);
+    const pMin=hh*60+mm;
+    const diff=pMin-nowMin;
+    const isPast=diff<0;
+    const isNext=diff>0&&diff<minDiff;
+    if(isNext){minDiff=diff;nextPrayer={name:p,time,diff};}
+    // Check if prayed today
+    const dk=TDK();const hid=PRAYER_IDS[p];
+    const prayed=hid&&S.checks[`${hid}_${dk}`];
+    const div=document.createElement('div');
+    div.style.cssText=`text-align:center;padding:2px 8px;border-radius:2px;border:1px solid ${prayed?'rgba(61,184,106,0.5)':isPast?'rgba(192,32,80,0.2)':'rgba(100,50,140,0.2)'};background:${prayed?'rgba(61,184,106,0.08)':isPast?'rgba(192,32,80,0.05)':'transparent'};`;
+    div.innerHTML=`<div style="font-family:'Cinzel',serif;font-size:8px;color:${prayed?'#3db86a':isPast?'#584868':'#a090b8'};letter-spacing:1px;">${p}</div><div style="font-family:'Cinzel',serif;font-size:10px;color:${prayed?'#3db86a':isPast?'#584868':'#c9a84c'};">${time}</div>${prayed?'<div style="font-size:7px;color:#3db86a;">✓</div>':''}`;
+    el.appendChild(div);
+  }
+  const np=document.getElementById('next-prayer');
+  if(nextPrayer&&np){
+    const h=Math.floor(nextPrayer.diff/60),m=nextPrayer.diff%60;
+    np.textContent=`${nextPrayer.name} dans ${h>0?h+'h':''} ${m}min`;
+  }
+}
+
+function schedulePrayerAlerts(){
+  if(!prayerData||!('Notification' in window))return;
+  const prayers=['Fajr','Dhuhr','Asr','Maghrib','Isha'];
+  const aliceReminders=[
+    "Il est l'heure. Allah t'appelle. Pose tout.",
+    "La prière ne revient pas. Ce moment est unique.",
+    "Lève-toi. Fais ta prière. Le reste attendra.",
+    "C'est l'heure de Fajr. Le lever le plus précieux.",
+    "Chaque prière est une conversation avec Allah.",
+  ];
+  for(const p of prayers){
+    const time=prayerData[p];if(!time)continue;
+    const [hh,mm]=time.split(':').map(Number);
+    const now=new Date();
+    const prayerTime=new Date();prayerTime.setHours(hh,mm,0,0);
+    const diff=prayerTime-now;
+    if(diff>0&&diff<24*3600000){
+      setTimeout(()=>{
+        // Show in-app alert
+        const msg=aliceReminders[Math.floor(Math.random()*aliceReminders.length)];
+        showToast(`🤲 ${p} — "${msg}"`);
+        document.getElementById('alice-msg').textContent=`"${msg}"`;
+        renderPrayerTimes();
+        // Browser notification if allowed
+        if(Notification.permission==='granted'){
+          new Notification(`🤲 ${p}`,{body:msg,icon:''});
+        }
+      },diff);
+    }
+  }
+  // Update display every minute
+  setInterval(renderPrayerTimes,60000);
+}
+
+function requestNotifPermission(){
+  if('Notification' in window&&Notification.permission==='default'){
+    Notification.requestPermission();
+  }
+}
+
+// PRAYER TIMES
+let prayerTimes={};
+let prayerTimers=[];
+const PRAYER_ALICE={
+  Fajr:["Fajr. Le monde dort encore. Toi, tu te lèves pour Allah.","L'aube t'appelle. C'est l'heure de Fajr.","Chaque Fajr prié est une victoire sur toi-même."],
+  Dhuhr:["Dhuhr. Pause au milieu du monde — reviens à l'essentiel.","Le soleil est au zénith. C'est l'heure de Dhuhr.","Dhuhr t'attend. Deux minutes suffisent."],
+  Asr:["Asr. L'après-midi file vite. Ne la laisse pas passer sans prière.","C'est l'heure de Asr. Pose ce que tu fais.","Asr — la prière que beaucoup oublient. Pas toi."],
+  Maghrib:["Maghrib. Le soleil se couche. Remercie Allah pour cette journée.","C'est l'heure de Maghrib. Le ciel change de couleur pour toi.","Maghrib — une des plus belles prières. Ne la manque pas."],
+  Isha:["Isha. La journée se termine. Clôture-la avec Allah.","C'est l'heure de Isha. La nuit appartient à ceux qui prient.","Isha — le sceau de ta journée. Prie."],
+};
+async function fetchPrayerTimes(){
+  try{
+    const now=new Date();
+    const d=now.getDate();const m=now.getMonth()+1;const y=now.getFullYear();
+    const url='https://api.aladhan.com/v1/timingsByAddress/'+d+'-'+m+'-'+y+'?address=Evry-Courcouronnes,France&method=3';
+    const res=await fetch(url);const data=await res.json();
+    if(data.code===200){
+      const t=data.data.timings;
+      prayerTimes={Fajr:t.Fajr,Dhuhr:t.Dhuhr,Asr:t.Asr,Maghrib:t.Maghrib,Isha:t.Isha};
+      localStorage.setItem('alice_prayers_'+TDK(),JSON.stringify(prayerTimes));
+    }
+  }catch(e){
+    const cached=localStorage.getItem('alice_prayers_'+TDK());
+    if(cached)prayerTimes=JSON.parse(cached);
+  }
+  renderPrayerWidget();
+  schedulePrayerNotifs();
+}
+function renderPrayerWidget(){
+  const el=document.getElementById('prayer-widget');if(!el||!Object.keys(prayerTimes).length)return;
+  const now=new Date();
+  const nowMin=now.getHours()*60+now.getMinutes();
+  const prayers=['Fajr','Dhuhr','Asr','Maghrib','Isha'];
+  const icons=['🌅','☀️','🌤️','🌇','🌙'];
+  el.innerHTML='';
+  let nextP=null;let nextMin=9999;
+  prayers.forEach((p,i)=>{
+    const time=prayerTimes[p];if(!time)return;
+    const parts=time.split(':');const h=parseInt(parts[0]);const min=parseInt(parts[1]);
+    const total=h*60+min;
+    const isPast=nowMin>total;
+    if(!isPast&&total<nextMin){nextMin=total;nextP=p;}
+    const div=document.createElement('div');
+    div.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:6px 10px;border-radius:2px;margin-bottom:4px;background:'+(isPast?'rgba(139,61,200,0.04)':'rgba(61,184,106,0.08)')+';border:1px solid '+(isPast?'var(--border)':'rgba(61,184,106,0.3)')+';';
+    div.innerHTML='<span style="font-family:Cinzel,serif;font-size:10px;color:'+(isPast?'var(--textm)':'var(--emerald2)')+';">'+icons[i]+' '+p+'</span><span style="font-family:Cinzel,serif;font-size:11px;color:'+(isPast?'var(--textm)':'var(--gold)')+';">'+time+'</span>'+(isPast?'<span style="font-size:10px;color:var(--emerald2);">✓</span>':'<span style="font-size:10px;color:var(--acc3);">→</span>');
+    el.appendChild(div);
+  });
+  const nextEl=document.getElementById('next-prayer');
+  if(nextEl){
+    if(nextP){
+      const parts=prayerTimes[nextP].split(':');const diff=(parseInt(parts[0])*60+parseInt(parts[1]))-nowMin;
+      const hh=Math.floor(diff/60);const mm=diff%60;
+      nextEl.textContent='Prochaine : '+nextP+' dans '+(hh>0?hh+'h':'')+mm+'min';
+    } else {nextEl.textContent='Toutes les prières sont passées. Bonne nuit ✦';}
+  }
+}
+function schedulePrayerNotifs(){
+  prayerTimers.forEach(t=>clearTimeout(t));prayerTimers=[];
+  if(!('Notification' in window)||Notification.permission!=='granted')return;
+  const prayers=['Fajr','Dhuhr','Asr','Maghrib','Isha'];
+  const now=new Date();const nowMin=now.getHours()*60+now.getMinutes();
+  prayers.forEach(p=>{
+    const time=prayerTimes[p];if(!time)return;
+    const parts=time.split(':');const total=parseInt(parts[0])*60+parseInt(parts[1]);
+    const diff=(total-nowMin)*60*1000;
+    if(diff>0){
+      const t=setTimeout(()=>{
+        const msgs=PRAYER_ALICE[p]||['Il est temps de prier.'];
+        const msg=msgs[Math.floor(Math.random()*msgs.length)];
+        try{new Notification('Alice — '+p,{body:msg});}catch(e){}
+        document.getElementById('alice-msg').textContent='"'+msg+'"';
+        showToast('🤲 '+p+' — '+msg);
+      },diff);
+      prayerTimers.push(t);
+    }
+  });
+}
+function requestNotifPermission(){
+  if('Notification' in window&&Notification.permission==='default'){
+    Notification.requestPermission().then(p=>{if(p==='granted'){schedulePrayerNotifs();showToast('Notifications activées. Alice veillera sur toi.');}});
+  } else if(Notification.permission==='granted'){showToast('Notifications déjà activées.');}
+  else{showToast('Notifications refusées par le navigateur.');}
+}
+setInterval(()=>{renderPrayerWidget();},60000);
+setInterval(()=>{fetchPrayerTimes();},3600000);
+
+function generateAutoQuestForHabit(habit){
+  const newQuests=[
+    {name:'Maîtrise : '+habit.name.substring(0,18),desc:'Accomplis "'+habit.name.substring(0,20)+'" 5 fois cette semaine.',xp:80,cat:habit.cat||'soul',type:'hw',hid:habit.id,target:5},
+    {name:'Série de 7',desc:'Accomplis "'+habit.name.substring(0,20)+'" 7 jours de suite.',xp:150,cat:habit.cat||'soul',type:'c',hid:habit.id,target:7},
+  ];
+  const q={...newQuests[Math.floor(Math.random()*newQuests.length)]};
+  q.id=Date.now();q.rewarded=false;
+  if(!S.quests)S.quests=[];
+  if(S.quests.length<6){S.quests.push(q);SS();showToast('Nouvelle quête générée !');RQR();}
+}
+
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3200);}
 LS();if(!S.notes)S.notes=[];if(!S._achiev)S._achiev=[];if(!S.quests||!S.quests.length)GQ();
-initP();RH();UH();SAM('morning');setInterval(()=>SAM('morning'),3600000);initAutoMusic();initAliceImg();
+
+const ALICE_EXTRA_MORNING=[
+  "Il est encore tôt. Le monde dort. Toi, tu construis.",
+  "Allah t'a accordé un nouveau jour. Qu'en feras-tu ?",
+  "Le soleil se lève sans te demander si tu es prêt. Lève-toi.",
+  "Ta version de demain se construit dans les actions d'aujourd'hui.",
+  "La régularité n'est pas glamour. Elle est puissante.",
+  "Petit à petit, tu deviens quelqu'un d'autre. En mieux.",
+  "Aujourd'hui encore, tu peux choisir la discipline ou le regret.",
+  "Les habitudes font l'homme. Tes rituels font toi.",
+  "Un jour à la fois. C'est tout ce qu'on te demande.",
+  "Ce matin peut être le début de quelque chose de grand.",
+  "La magie n'existe pas. Mais la discipline transforme tout.",
+  "Tu n'as pas besoin de motivation. Tu as besoin de tes rituels.",
+  "Qu'est-ce que tu veux être dans 6 mois ? Commence maintenant.",
+  "Le temps passe de toute façon. Autant le remplir de sens.",
+  "Tes efforts d'aujourd'hui sont invisibles. Tes résultats de demain ne le seront pas.",
+  "La constance bat le talent quand le talent ne travaille pas.",
+  "Je ne t'encouragerai pas avec des mots vides. Coche tes cases.",
+  "La foi sans action est vide. L'action sans foi est aveugle.",
+  "Ensemble, foi et discipline — c'est ce qui forge une âme.",
+  "Même Allah n'aide pas ceux qui ne s'aident pas eux-mêmes.",
+  "Chaque journée disciplinée est une lettre écrite à ton futur.",
+  "Le succès n'est pas un événement. C'est une accumulation.",
+  "Personne ne te voit travailler dans l'ombre. Allah si.",
+  "Ce que tu fais aujourd'hui quand personne ne regarde — c'est ton caractère.",
+];
+const ALICE_EXTRA_CHECK=[
+  "C'est noté.", "Un de plus.", "Tu avances.", "Bien.", "Continue.",
+  "La rune est gravée.", "Chaque geste compte.", "Tu tiens ta parole.",
+  "C'est ça, la discipline.", "Allah voit ce que personne ne voit.",
+  "Tu n'as pas abandonné. Ça mérite d'être noté.",
+  "Le chemin se fait en marchant.", "Ce geste répété devient un fondement.",
+  "Aujourd'hui, tu as choisi la rigueur.", "Petit pas. Grand effet.",
+  "Tu progresses même quand personne ne regarde.",
+  "C'est pour toi, pas pour les autres.",
+  "Chaque habitude cochée est une victoire silencieuse.",
+  "Tu construis quelque chose de réel.",
+  "La discipline est une forme d'amour envers toi-même.",
+  "Bien joué. Maintenant la prochaine.",
+  "Un rituel de moins à regretter ce soir.",
+  "C'est comme ça qu'on change sa vie — un jour à la fois.",
+  "Tu as fait ce que beaucoup ont repoussé à demain.",
+  "Il n'y a pas de raccourci. Il y a juste la régularité.",
+  "Allah récompense l'effort sincère, même le plus petit.",
+  "Tu es en train de devenir quelqu'un d'autre. En mieux.",
+  "Imperceptible pour le monde. Irréversible pour toi.",
+  "Un jour tu regarderas en arrière et tu seras fier de maintenant.",
+  "Chaque check est une brique. Tu bâtis quelque chose.",
+  "La régularité fait plus que l'intensité. Toujours.",
+  "Ce n'est pas grand chose. Et pourtant, c'est tout.",
+];
+const ALICE_EXTRA_MISS=[
+  "Ça arrive. Ce qui compte c'est la suite.",
+  "Un rituel manqué n'efface pas tous les autres.",
+  "Ne te mens pas. Mais ne te juge pas non plus.",
+  "Recommence demain. Sans drama.",
+  "La perfection n'existe pas. La constance, elle, existe.",
+  "Un écart ne définit pas ton parcours.",
+  "Ce n'est pas grave. Mais n'en fais pas une habitude.",
+  "L'important c'est la tendance, pas le jour isolé.",
+  "Les grands ont tous manqué des jours. Aucun n'a arrêté.",
+  "Ce soir, réfléchis à pourquoi. Demain, agis.",
+  "Tout le monde tombe. Peu se relèvent tout de suite.",
+  "Je ne te blâme pas. Mais ne te mens pas non plus.",
+];
+AM.morning=[...AM.morning,...ALICE_EXTRA_MORNING];
+AM.check=[...AM.check,...ALICE_EXTRA_CHECK];
+AM.miss=[...AM.miss,...ALICE_EXTRA_MISS];
+
+initP();RH();UH();SAM('morning');setInterval(()=>SAM('morning'),3600000);initAutoMusic();initAliceImg();fetchPrayerTimes();requestNotifPermission();fetchPrayerTimes();requestNotifPermission();
 </script>
 </body>
 </html>
